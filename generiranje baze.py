@@ -15,7 +15,7 @@ import urllib.request # Knjižnica za delo s spletom
 BAZA = "baza.sqlite3" #ce ne bo te mape, jo bo ustvaril
 
 # URL, na katerem dobimo podatke
-URL = "https://github.com/zangrjol/Optimizacija-donosnosti-portfelja/blob/master/deset.csv"
+URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/deset.csv"
 
 ### Program
 
