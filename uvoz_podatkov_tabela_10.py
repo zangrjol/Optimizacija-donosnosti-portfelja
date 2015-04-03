@@ -14,6 +14,11 @@ import sqlite3
 
 BAZA = "delnice.db"
 baza = sqlite3.connect(BAZA)
+datoteka = "tickers_12.txt"
+f = open(datoteka,'r')
+vrs2 = f.readline()
+h = vrs2.split(", ")
+
 baza.execute('''CREATE TABLE IF NOT EXISTS Delnica (
     OPK REAL,
     AVT REAL,
