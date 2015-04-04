@@ -1,12 +1,36 @@
-delnice <- read.csv2(file="C:/zan/faks/opb/ODP/projekt.csv", header = TRUE, fileEncoding = "Windows-1250")
+delnice <- read.csv2(file="C:/zan/faks/opb/ODP/projekt1.csv", header = TRUE, fileEncoding = "Windows-1250")
 rownames(delnice)<- delnice[,1]
 delnice[,1] <- NULL
 
-######benchmark mora biti na zadnjem mestu pri vnašanju tickerjev!!!!
+######benchmark mora biti na zadnjem mestu pri vnašanju tickerjev (SP500 je GSPC)!!!!
 
 #vse NA-je nadomestim z 0 (problem bo, če kje vmes NA, sepravi da ob določenem datumu ne bo podatka - 
 #UPAM DA TO NI MOŽNO!!! - DRUGAČE TREBA NAREDITI ŠE ENO ZANKO KI JE POMOJE DOST ZAJEBANA)
 delnice[is.na(delnice)] <- 0
+
+for (j in 1:length(delnice[1,])) {
+  zacni <- 1
+  while (delnice[zacni,j] == 0) {
+    zacni <- zacni + 1
+  }
+  for (i in zacni:length(delnice[,1])) {
+
+    if (delnice[i,j] == 0) {
+      k <- 0 #nastavim števec, da vidimo, koliko zaporednih niičel je od i naprej in kje se končajo
+      while (delnice[i+k+1,j] ==0) {
+        k <- k+1
+      }
+      l <- 0 #nastavim števec, da vidimo, koliko zaporednih niičel je od i nazaj in kje se končajo
+      while (delnice[i-l-1,j] ==0 & (i-l)>0) {
+        l <- l+1
+      }
+      delnice[(i-l):(i+k),j] <- (delnice[i+k+1,j]+delnice[i-l-1,j])/2
+    }
+    #else {break}
+  }
+}
+
+
 
 #spremenim datum v tri stolpce z letom, mesecem in dnevom
 delnice <- cbind(dan = substr(row.names(delnice), 9, 10), delnice)
@@ -33,11 +57,12 @@ for (j in 4:((length(delnice[1,])))) { #4, ker imamo še stolpec leto, mesec, da
   else {delnice[i,j] <- 1}
 }
 
-write.csv2(delnice,file="C:/zan/faks/opb/ODP/delnice.csv") #tabela s procentualnimi spremambami kotiranja delnic
+#write.csv2(delnice,file="C:/zan/faks/opb/ODP/delnice.csv") #tabela s procentualnimi spremambami kotiranja delnic
 
 ######################################################################################################
 #v novi razpredelnici sharp bomo računasli 90 dnevne sharpove indekse
 dnevi <- 90 #koliko dnevni sharpov index računamo
+
 
 sharp <- delnice
 for (j in 4:(length(delnice[1,])-1)) { #do -1, ker zadnji stolpec je benchmark!
@@ -50,8 +75,13 @@ for (j in 4:(length(delnice[1,])-1)) { #do -1, ker zadnji stolpec je benchmark!
   }
   for (i in 1:(k+dnevi-1)) {sharp[i,j] <- NA}
 }
+
+
 sharp <- sharp[(dnevi+1):length(sharp[,1]),] #zbrišem prvih 90 vrstic, kjer sharpov ni izračunan
-write.csv2(sharp,file="C:/zan/faks/opb/ODP/sharp.csv") #tabela izračunanih sharpovih vrednosti
+
+sharp[is.na(sharp)] <- 0 #tiste k napiše pol NaN (ne vem zakaj), jih kr dam na 0
+#write.csv2(sharp,file="C:/zan/faks/opb/ODP/sharp.csv") #tabela izračunanih sharpovih vrednosti
+
 
 ####################################################################################################
 #dodajam še novo razpredelnico, ki bo povedala, v katero delnico investirati na vsakih n dni
@@ -72,7 +102,7 @@ for (j in 4:(length(sharp[1,])-1)) { #do -1, ker zadnji stolpec je benchmark!
 }
 invest <- invest[(n+1):length(invest[,1]),] #izbrišem prvih n vrstic, kjer ni izračuna
 
-write.csv2(invest,file="C:/zan/faks/opb/ODP/invest.csv") #tabela povprečnih sharpovih vrednosti desetih prejšnjih dni
+#write.csv2(invest,file="C:/zan/faks/opb/ODP/invest.csv") #tabela povprečnih sharpovih vrednosti desetih prejšnjih dni
 
 #prikažem samo tiste sharpove, pri katerih trejdam
 trade <- invest[seq(1, length(invest[,1]), n), ]
@@ -85,7 +115,7 @@ for (i in 1:length(trade[,1])) {
 colnames(trade) <- c("leto", "mesec", "dan", seq(length(trade[1,])-3, 1, -1))
 trade <- trade[,c(1,2,3,length(trade[1,]):4)] #tak vrstni red, kot hočem - 1 pomeni največji sharpov
 
-write.csv2(trade,file="C:/zan/faks/opb/ODP/trade.csv") #tabela delnic, ki padajo po sharpovih vrednostih
+#write.csv2(trade,file="C:/zan/faks/opb/ODP/trade.csv") #tabela delnic, ki padajo po sharpovih vrednostih
 
 #lahko bi še pogledal, kakšne standardne odklone imajo sharpove in ali je trend naraščanja/padanja...
 #plot(rownames(sharp), sharp[,8], type="l")
