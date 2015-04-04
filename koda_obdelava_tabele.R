@@ -57,7 +57,7 @@ write.csv2(sharp,file="C:/zan/faks/opb/ODP/sharp.csv") #tabela izračunanih shar
 #dodajam še novo razpredelnico, ki bo povedala, v katero delnico investirati na vsakih n dni
 #vsak n-ti dan bomo pogledali za n dni nazaj, kakšno je bilo povprečje sharpovih svrednosti in izbrali najvišje
 
-n <- 100
+n <- 10
 invest <- sharp
 invest[is.na(invest)] <- 0
 for (j in 4:(length(sharp[1,])-1)) { #do -1, ker zadnji stolpec je benchmark!
@@ -85,7 +85,7 @@ for (i in 1:length(trade[,1])) {
 colnames(trade) <- c("leto", "mesec", "dan", seq(length(trade[1,])-3, 1, -1))
 trade <- trade[,c(1,2,3,length(trade[1,]):4)] #tak vrstni red, kot hočem - 1 pomeni največji sharpov
 
-write.csv2(invest,file="C:/zan/faks/opb/ODP/trade.csv") #tabela delnic, ki padajo po sharpovih vrednostih
+write.csv2(trade,file="C:/zan/faks/opb/ODP/trade.csv") #tabela delnic, ki padajo po sharpovih vrednostih
 
 #lahko bi še pogledal, kakšne standardne odklone imajo sharpove in ali je trend naraščanja/padanja...
 #plot(rownames(sharp), sharp[,8], type="l")
