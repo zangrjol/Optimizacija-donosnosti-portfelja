@@ -4,6 +4,8 @@ __pycache__
 *.log
 *.out
 *.pyc
+*.db
+*.sqlite3
 .DS_Store
 .Rproj.user
 auth.py
