@@ -15,7 +15,7 @@ import urllib.request # Knjižnica za delo s spletom
 BAZA = "baza.sqlite3" #ce ne bo te mape, jo bo ustvaril
 
 # URL, na katerem dobimo podatke
-URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/deset.csv"
+#URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/deset.csv"
 
 ### Program
 
@@ -27,17 +27,10 @@ baza = sqlite3.connect(BAZA)
 
 # Naredimo tabelo kraj, če je še ni
 baza.execute('''CREATE TABLE IF NOT EXISTS Delnice (
-  OPK REAL,
-  AVT REAL,
-  GPN REAL,
-  SDRL REAL,
-  LEK REAL,
-  ITC REAL,
-  TEG REAL,
-  IIX REAL,
-  CSGP REAL,
-  CSL REAL
-)''')
+  Simbol TEXT,
+  Datum TEXT,
+  Cena REAL,
+  )''')
 
 ### Naredimo tabelo podatki, če je še ni
 ##baza.execute('''CREATE TABLE IF NOT EXISTS podatki (
