@@ -1,3 +1,5 @@
+#Program, ki generira bazo na Postgresu
+
 import sqlite3        # Knjižnica za delo z bazo
 import csv            # Knjižnica za delo s CSV datotekami
 import urllib.request # Knjižnica za delo s spletom
@@ -17,16 +19,22 @@ razpredelnica = csv.reader([v.decode() for v in www], delimiter=';')
 baza = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
 
 #Naredimo tabelo kraj, če je še ni
-c = baza.cursor()
-c.execute('DROP TABLE Delnice')
-c.execute('''CREATE TABLE Delnice (
-  Id SERIAL PRIMARY KEY,
-  Simbol TEXT,
-  Datum DATE,
-  Cena REAL,
-  UNIQUE (Simbol,Datum)
-  )''')
-baza.commit()
+def izbrisi():
+    c = baza.cursor()
+    c.execute('DROP TABLE Delnice')
+    baza.commit()
+
+def ustvari():
+    c.execute('''CREATE TABLE Delnice (
+      id SERIAL PRIMARY KEY,
+      simbol TEXT,
+      datum DATE,
+      cena REAL,
+      sprememba REAL,
+      sharp REAL,
+      UNIQUE (Simbol,Datum)
+      )''')
+    baza.commit()
 
 delnice1 = delnice.decode("utf-8")
 delnice2 = delnice1.replace('\n','')
@@ -48,7 +56,7 @@ def importData():
     c = baza.cursor()
     for vrstica in razpredelnica:
         for i in range(1,len(vrstica)):
-            c.execute("INSERT INTO Delnice(Simbol,Datum,Cena) VALUES (%s,%s,%s)", [imena_podjetij[i-1],vrstica[0],float(vrstica[i].replace(',', '.'))] )
+            c.execute("INSERT INTO Delnice(simbol,datum,cena,sprememba,sharp) VALUES (%s,%s,%s,NULL,NULL)", [imena_podjetij[i-1],vrstica[0],float(vrstica[i].replace(',', '.'))] )
     c.close()
     baza.commit()
     
