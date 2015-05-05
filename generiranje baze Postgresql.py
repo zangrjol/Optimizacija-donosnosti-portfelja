@@ -14,6 +14,9 @@ razpredelnica = csv.reader([v.decode() for v in www], delimiter=';')
 #BAZA = "baza.psycopg2"
 #URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/proba.csv"
 
+
+
+
 # Naredimo povezavo z bazo. Funkcija sqlite3.connect vrne objekt,
 # ki hrani podatke o povezavi z bazo.
 baza = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
@@ -24,8 +27,8 @@ def izbrisi():
     c.execute('DROP TABLE Delnice')
     baza.commit()
 
-def ustvari():
-    c.execute('''CREATE TABLE Delnice (
+def ustvariTabelo():
+    c.execute('''CREATE TABLE delnice (
       id SERIAL PRIMARY KEY,
       simbol TEXT,
       datum DATE,
@@ -33,6 +36,14 @@ def ustvari():
       sprememba REAL,
       sharp REAL,
       UNIQUE (Simbol,Datum)
+      )''')
+    baza.commit()
+
+def ustvariImena():
+    c.execute('''CREATE TABLE imena (
+      id SERIAL PRIMARY KEY,
+      simbol TEXT REFERENCES delnice(simbol),
+      ime TEXT
       )''')
     baza.commit()
 
@@ -52,14 +63,27 @@ def iskanje(datoteka):
         for i in len(vrstica):
             print(i)
             
-def importData():
+def podatkiCene():
     c = baza.cursor()
     for vrstica in razpredelnica:
         for i in range(1,len(vrstica)):
-            c.execute("INSERT INTO Delnice(simbol,datum,cena,sprememba,sharp) VALUES (%s,%s,%s,NULL,NULL)", [imena_podjetij[i-1],vrstica[0],float(vrstica[i].replace(',', '.'))] )
+            c.execute("INSERT INTO delnice(simbol,datum,cena,sprememba,sharp) VALUES (%s,%s,%s,NULL,NULL)", [imena_podjetij[i-1],vrstica[0],float(vrstica[i].replace(',', '.'))] )
     c.close()
     baza.commit()
-    
+
+def podatkiIMena():
+    #uvozimo imena delnic v tabelo:
+    pot = "C:/Users/MATIC/Desktop/sola/3.letnik/osnove podatkovnih baz/ODP/DJIA.csv"
+    csvfile = open(pot,'r')
+    naslov = csvfile.readline()
+    csv = csv.reader(csvfile, delimiter=";")
+    c = baza.cursor()
+    for vrstica in csv:
+        c.execute("INSERT INTO imena(simbol,ime) VALUES (%s,%s)",[vrstica[1],[vrstica[3]])
+    c.close()
+    baza.commit()
+    csvfile.close()
+                                                                  
 ##for vrstica in razpredelnica:
 ##        print(vrstica.split(sep=";")
 ##
