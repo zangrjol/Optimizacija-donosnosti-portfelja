@@ -1,5 +1,5 @@
 start.time <- Sys.time()
-delnice <- read.csv2(file="C:/zan/faks/opb/ODP/proba.csv", header = TRUE, fileEncoding = "Windows-1250")
+delnice <- read.csv2(file="C:/zan/faks/opb/ODP/tabela_delnic.csv", header = TRUE, fileEncoding = "Windows-1250")
 rownames(delnice)<- delnice[,1]
 delnice[,1] <- NULL
 
@@ -64,7 +64,7 @@ sharp <- sharp[(dnevi+1):length(sharp[,1]),] #zbrišem prvih 90 vrstic, kjer sha
 #dodajam še novo razpredelnico, ki bo povedala, v katero delnico investirati na vsakih n dni
 #vsak n-ti dan bomo pogledali za n dni nazaj, kakšno je bilo povprečje sharpovih svrednosti in izbrali najvišje
 
-n <- 30
+n <- 20
 delez <- seq(1/n,1, 1/n) #da bomo vzeli tehtano povprečje sharpov z večjo težo na čim kasnejših sharpih
 invest <- sharp
 invest[is.na(invest)] <- 0
@@ -86,12 +86,32 @@ invest <- invest[(n+1):length(invest[,1]),] #izbrišem prvih n vrstic, kjer ni i
 trade <- invest[seq(1, length(invest[,1]), n), ]
 trade[is.na(trade)] <- -Inf #tiste, ki še ne kotirajo, sem dal na -inf, da jih prikaže na zadnjem mestu po velikosti sharpa
 trade <- trade[,-length(trade[1,])] #izbrišem benchmark
+imena <- trade
 #razpredelnica, kam naj investiram v določenih datumih
 for (i in 1:length(trade[,1])) {
-  trade[i,4:length(trade[1,])] <- colnames(tail(sort(trade[i,4:length(trade[1,])])))
+  trade[i,4:length(trade[1,])] <- ((sort(trade[i,4:length(trade[1,])]))) #razvrstimo jih po velikosti sharpove
 }
-colnames(trade) <- c("leto", "mesec", "dan", seq(length(trade[1,])-3, 1, -1))
-trade <- trade[,c(1,2,3,length(trade[1,]):4)] #tak vrstni red, kot hočem - 1 pomeni največji sharpov
+
+#indeksi column namesov
+y <- c()
+for (i in 1:length(trade[,1])) {
+  y <- rbind(y,match(trade[i,1:length(trade[1,])], imena[i,1:length(trade[1,])]))
+}
+y <- y[,-(1:3)]
+#vektor column namesov
+vektor <- c((colnames(imena)))
+#zamenjamo številke za column namese
+for (j in 1:length(y[1,])) {
+  for (i in 1:length(y[,1])) {
+    y[i,j] <- vektor[as.numeric(y[i,j])]
+  }
+}
+#pripnemo še datume in dobimo končno tabelo
+koncna <- trade[,-(4:length(trade[1,]))]
+koncna <- cbind(koncna,y)
+
+colnames(koncna) <- c("leto", "mesec", "dan", seq(length(trade[1,])-3, 1, -1))
+koncna <- koncna[,c(1,2,3,length(koncna[1,]):4)] #tak vrstni red, kot hočem - 1 pomeni največji sharpov
 
 #write.csv2(trade,file="C:/zan/faks/opb/ODP/trade.csv") #tabela delnic, ki padajo po sharpovih vrednostih
 
@@ -101,43 +121,45 @@ trade <- trade[,c(1,2,3,length(trade[1,]):4)] #tak vrstni red, kot hočem - 1 po
 
 
 #profit, če investiramo vsako obdobje v 5 delnic z najvišjim sharpom
-proba <- (trade[-(1:3)])
-proba <- proba[-(6:length(proba[1,]))] #investiramo v 5 delnic
-profit.skupen <- 0
-for (j in 1:length(proba[1,])) {
-  for (i in 1:(length(proba[,1])-1)) {
-    profit.skupen <- profit.skupen * ((cene[dnevi+n+1+n*(i),proba[i,j]]-cene[dnevi+n+1+n*(i-1),proba[i,j]])/cene[dnevi+n+1+n*(i-1),proba[i,j]])+1
-  }
-}
-
-#profiti vsake strategije posebej (profit(i) označuje profit, če investiramo v i-to sharpovo največjo delnico)
-profit1 <- 0
-profit2 <- 0
-profit3 <- 0
-profit4 <- 0
-profit5 <- 0
-for (i in 1:(length(proba[,1])-1)) {
-  profit1 <- profit1 * ((cene[dnevi+n+1+n*(i),proba[i,1]]-cene[dnevi+n+1+n*(i-1),proba[i,1]])/cene[dnevi+n+1+n*(i-1),proba[i,1]])+1
-}
-for (i in 1:(length(proba[,1])-1)) {
-  profit2 <- profit2 * ((cene[dnevi+n+1+n*(i),proba[i,2]]-cene[dnevi+n+1+n*(i-1),proba[i,2]])/cene[dnevi+n+1+n*(i-1),proba[i,2]])+1
-}
-for (i in 1:(length(proba[,1])-1)) {
-  profit3 <- profit3 * ((cene[dnevi+n+1+n*(i),proba[i,3]]-cene[dnevi+n+1+n*(i-1),proba[i,3]])/cene[dnevi+n+1+n*(i-1),proba[i,3]])+1
-}
-for (i in 1:(length(proba[,1])-1)) {
-  profit4<- profit4 *((cene[dnevi+n+1+n*(i),proba[i,4]]-cene[dnevi+n+1+n*(i-1),proba[i,4]])/cene[dnevi+n+1+n*(i-1),proba[i,4]])+1
-}
-for (i in 1:(length(proba[,1])-1)) {
-  profit5 <- profit5 * ((cene[dnevi+n+1+n*(i),proba[i,5]]-cene[dnevi+n+1+n*(i-1),proba[i,5]])/cene[dnevi+n+1+n*(i-1),proba[i,5]])+1
-}
-
-profit.skupen-1
-profit1-1
-profit2-1
-profit3-1
-profit4-1
-profit5-1
+# proba <- (koncna[-(1:3)])
+# proba <- proba[-(6:length(proba[1,]))] #investiramo v 5 delnic
+# profit <- 1
+# profit.skupen <- 0
+# for (j in 1:length(proba[1,])) {
+#   profit.skupen <- profit.skupen + profit
+#   for (i in 1:(length(proba[,1])-1)) {
+#     profit <- profit * (((cene[dnevi+n+1+n*(i),proba[i,j]]-cene[dnevi+n+1+n*(i-1),proba[i,j]])/cene[dnevi+n+1+n*(i-1),proba[i,j]])+1)
+#   }
+# }
+# 
+# #profiti vsake strategije posebej (profit(i) označuje profit, če investiramo v i-to sharpovo največjo delnico)
+# profit1 <- 1
+# profit2 <- 1
+# profit3 <- 1
+# profit4 <- 1
+# profit5 <- 1
+# for (i in 1:(length(proba[,1])-1)) {
+#   profit1 <- profit1 * (((cene[dnevi+n+1+n*(i),proba[i,1]]-cene[dnevi+n+1+n*(i-1),proba[i,1]])/cene[dnevi+n+1+n*(i-1),proba[i,1]])+1)
+# }
+# for (i in 1:(length(proba[,1])-1)) {
+#   profit2 <- profit2 * (((cene[dnevi+n+1+n*(i),proba[i,2]]-cene[dnevi+n+1+n*(i-1),proba[i,2]])/cene[dnevi+n+1+n*(i-1),proba[i,2]])+1)
+# }
+# for (i in 1:(length(proba[,1])-1)) {
+#   profit3 <- profit3 * (((cene[dnevi+n+1+n*(i),proba[i,3]]-cene[dnevi+n+1+n*(i-1),proba[i,3]])/cene[dnevi+n+1+n*(i-1),proba[i,3]])+1)
+# }
+# for (i in 1:(length(proba[,1])-1)) {
+#   profit4<- profit4 *(((cene[dnevi+n+1+n*(i),proba[i,4]]-cene[dnevi+n+1+n*(i-1),proba[i,4]])/cene[dnevi+n+1+n*(i-1),proba[i,4]])+1)
+# }
+# for (i in 1:(length(proba[,1])-1)) {
+#   profit5 <- profit5 * (((cene[dnevi+n+1+n*(i),proba[i,5]]-cene[dnevi+n+1+n*(i-1),proba[i,5]])/cene[dnevi+n+1+n*(i-1),proba[i,5]])+1)
+# }
+# 
+# profit.skupen-1
+# profit1-1
+# profit2-1
+# profit3-1
+# profit4-1
+# profit5-1
 
 
 
