@@ -1,5 +1,5 @@
 start.time <- Sys.time()
-delnice <- read.csv2(file="C:/zan/faks/opb/ODP/delnice.csv", header = TRUE, fileEncoding = "Windows-1250")
+delnice <- read.csv2(file="U:/opb/ODP/delnice.csv", header = TRUE, fileEncoding = "Windows-1250")
 rownames(delnice)<- delnice[,1]
 delnice[,1] <- NULL
 
@@ -54,7 +54,7 @@ for (j in 1:(length(delnice[1,])-1)) { #do -1, ker zadnji stolpec je benchmark!
 #dodajam še novo razpredelnico, ki bo povedala, v katero delnico investirati na vsakih n dni
 #vsak n-ti dan bomo pogledali za n dni nazaj, kakšno je bilo povprečje sharpovih svrednosti in izbrali najvišje
 
-n <- 20
+n <- 1
 delez <- seq(1/n,1, 1/n) #da bomo vzeli tehtano povprečje sharpov z večjo težo na čim kasnejših sharpih
 invest <- sharp
 invest[is.na(invest)] <- 0
@@ -104,6 +104,9 @@ koncna <- y[,c(length(y[1,]):1)] #tak vrstni red, kot hočem - 1 pomeni največj
 
 #write.csv2(trade,file="C:/zan/faks/opb/ODP/trade.csv") #tabela delnic, ki padajo po sharpovih vrednostih
 
+
+
+
 #uporabili bomo: cene, delnice, sharp
 tabela1_cene <- cene[(dnevi+1):length(cene[,1]),]
 tabela2_spremembe <- delnice[(dnevi+1):length(delnice[,1]),]
@@ -114,10 +117,31 @@ tabela1_cene <- tabela1_cene[c(1:length(tabela1_cene)-1)]
 tabela2_spremembe <- tabela2_spremembe[c(1:length(tabela2_spremembe)-1)]
 tabela3_sharpe <- tabela3_sharpe[c(1:length(tabela3_sharpe)-1)]
 
+#prikažem samo tiste dneve, na katere investiram
+tabela1_cene <- tabela1_cene[seq(1, length(tabela1_cene[,1]), n), ]
+tabela2_spremembe <- tabela2_spremembe[seq(1, length(tabela2_spremembe[,1]), n), ]
+tabela3_sharpe <- tabela3_sharpe[seq(1, length(tabela3_sharpe[,1]), n), ]
+
 #shranimo
-write.csv2(tabela1_cene,file="C:/zan/faks/opb/ODP/tabela1_cene.csv")
-write.csv2(tabela2_spremembe,file="C:/zan/faks/opb/ODP/tabela2_spremembe.csv")
-write.csv2(tabela3_sharpe,file="C:/zan/faks/opb/ODP/tabela3_sharpe.csv")
+# write.csv2(tabela1_cene,file="C:/zan/faks/opb/ODP/tabela1_cene.csv")
+# write.csv2(tabela2_spremembe,file="C:/zan/faks/opb/ODP/tabela2_spremembe.csv")
+# write.csv2(tabela3_sharpe,file="C:/zan/faks/opb/ODP/tabela3_sharpe.csv")
+
+###################relativizacija cen
+krivulja <- cene
+for (j in 1:((length(delnice[1,])))) { 
+  i <- length(delnice[,1])
+  while (i>1 & delnice[i,j] != 0) {
+    i <- i-1
+  }
+  for (k in i:length(delnice[,1])) {
+    krivulja[k,j] <- cene[k,j]/cene[i,j]
+  }
+}
+# plot(seq(1,length(delnice[,1]), 1), krivulja$AAPL, type="l")
+# lines(krivulja$AXP)
+# lines(krivulja$GS)
+write.csv2(krivulja,file="U:/opb/ODP/krivulja.csv")
 
 end.time <- Sys.time()
 time.taken <- end.time - start.time
