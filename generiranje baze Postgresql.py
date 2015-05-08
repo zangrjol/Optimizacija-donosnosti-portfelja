@@ -1,6 +1,5 @@
 #Program, ki generira bazo na Postgresu
 
-import sqlite3        # Knjižnica za delo z bazo
 import csv            # Knjižnica za delo s CSV datotekami
 import urllib.request # Knjižnica za delo s spletom
 import psycopg2, psycopg2.extensions, psycopg2.extras
@@ -11,7 +10,7 @@ import auth
 URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/tabela1_cene.csv"
 URL1 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/tabela2_spremembe.csv"
 URL2 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/tabela3_sharpe.csv"
-#URL3 =
+URL3 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/DJIA.csv"
 
 #urejanje tabel pridobljenih iz URL naslovov:
 wwwcene = urllib.request.urlopen(URL)
@@ -25,6 +24,10 @@ spremembe = csv.reader([v.decode() for v in wwwsp], delimiter=';')
 wwwsharp = urllib.request.urlopen(URL2)
 sharp = wwwsharp.readline()
 sharpove = csv.reader([v.decode() for v in wwwsharp], delimiter=';')
+
+wwwimena = urllib.request.urlopen(URL3)
+im = wwwimena.readline()
+ima = csv.reader([v.decode() for v in wwwimena], delimiter=';')
 ####
 ##www3 = urllib.request.urlopen(URL3)
 ##sharp5 = www3.readline()
@@ -39,10 +42,15 @@ sharpove = csv.reader([v.decode() for v in wwwsharp], delimiter=';')
 baza = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
 
 #najprej izbrisemo tabelo, ce je slucajno ze ustvarjena:
-def izbrisi():
+def izbrisiDelnice():
     c = baza.cursor()
     c.execute('DROP TABLE delnice')
     baza.commit()
+
+def izbrisiImena():
+    c = baza.cursor()
+    c.execute('DROP TABLE imena')
+    baza.commit()    
 
 
 #ko ni na postgresql-u nobene tabele!! ustvarimo tabeli:
@@ -63,7 +71,7 @@ def ustvariImena():
     c = baza.cursor()
     c.execute('''CREATE TABLE imena (
       id SERIAL PRIMARY KEY,
-      simbol TEXT REFERENCES delnice(simbol),
+      simbol TEXT,
       ime TEXT
       )''')
     baza.commit()
@@ -131,18 +139,12 @@ def podatkiSharp():
     c.close()
     baza.commit()
 
-##def podatkiIMena():
-##    #uvozimo imena delnic v tabelo:
-##    pot = "C:/Users/MATIC/Desktop/sola/3.letnik/osnove podatkovnih baz/ODP/DJIA.csv"
-##    csvfile = open(pot,'r')
-##    naslov = csvfile.readline()
-##    csv = csv.reader(csvfile, delimiter=";")
-##    c = baza.cursor()
-##    for vrstica in csv:
-##        c.execute("INSERT INTO imena(simbol,ime) VALUES (%s,%s)",[vrstica[1],[vrstica[3]])
-##    c.close()
-##    baza.commit()
-##    csvfile.close()
+def podatkiIMena():
+    c = baza.cursor()
+    for vrstica in ima:
+        c.execute("INSERT INTO imena(ime,simbol) VALUES (%s,%s)",[vrstica[1],vrstica[3]])
+    c.close()
+    baza.commit()
                                                                   
 ##for vrstica in razpredelnica:
 ##        print(vrstica.split(sep=";")
