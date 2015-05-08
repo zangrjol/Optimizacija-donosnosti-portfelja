@@ -42,17 +42,37 @@ shinyServer(function(input, output) {
   })
 
   output$naslov <- renderText({
-    paste("Najboljših",input$koliko,"delnic")
+    paste("Najboljsih",input$koliko,"delnic")
   })
 
   output$graf <- renderPlot({
-    datumi <- data.frame(select(filter(tabela,simbol %in% (input$select)),datum))
-    cene <- data.frame(select(filter(tabela,simbol %in% (input$select)),cena))
-    cene1 <- data.frame(select(filter(tabela,simbol %in% (input$ime)),cena))
-    plot(datumi[,1],cene[,1],'l',col="red",main=paste("Gibanje delnic",input$select,"in",input$ime),xlab="èas",ylab="vrednost",
+    datumi <- data.frame(select(filter(tabela,simbol %in% (input$select) & datum >= input$datum[1] & datum <= input$datum[2]),datum))
+    cene <- data.frame(select(filter(tabela,simbol %in% (input$select) & datum >= input$datum[1] & datum <= input$datum[2]),cena))
+    cene1 <- data.frame(select(filter(tabela,simbol %in% (input$ime) & datum >= input$datum[1] & datum <= input$datum[2]),cena))
+    plot(datumi[,1],cene[,1],'l',col="red",main=paste("Gibanje cen delnic",input$select,"in",input$ime),xlab="cas",ylab="vrednost",
          ylim=range(min(cene[,1],cene1[,1]),max(cene[,1],cene1[,1])))
     par(new=TRUE)
     plot(datumi[,1],cene1[,1],'l',ylim=range(min(cene[,1],cene1[,1]),max(cene[,1],cene1[,1])),xlab="",ylab="",col="green")
     legend("topleft",legend=c(input$select,input$ime),col=c("red","green"),lty=c(1,1))
   })
+  output$graf2 <- renderPlot({
+    zacetna1 <- data.frame(select(filter(tabela,simbol %in% (input$select) & datum >= input$datum[1] & datum <= input$datum[1]),cena))
+    zacetna2 <- data.frame(select(filter(tabela,simbol %in% (input$ime) & datum >= input$datum[1] & datum <= input$datum[1]),cena))
+    datumi <- data.frame(select(filter(tabela,simbol %in% (input$select) & datum >= input$datum[1] & datum <= input$datum[2]),datum))
+    cene <- data.frame(select(filter(tabela,simbol %in% (input$select) & datum >= input$datum[1] & datum <= input$datum[2]),cena))
+    cene1 <- data.frame(select(filter(tabela,simbol %in% (input$ime) & datum >= input$datum[1] & datum <= input$datum[2]),cena))
+    zacetna1 <- zacetna1[,1]
+    zacetna2 <- zacetna2[,1]
+    cene <- cene[,1]
+    cene1 <- cene1[,1]
+    cene <- cene/zacetna1
+    cene1 <- cene1/zacetna2
+    plot(datumi[,1],cene,'l',col="red",main=paste("Relativizirane cene",input$select,"in",input$ime),xlab="cas",ylab="vrednost",
+        ylim=range(min(cene,cene1),max(cene,cene1)))
+    par(new=TRUE)
+    plot(datumi[,1],cene1,'l',ylim=range(min(cene,cene1),max(cene,cene1)),xlab="",ylab="",col="green")
+    abline(h=1,lty=3)
+    legend("topleft",legend=c(input$select,input$ime),col=c("red","green"),lty=c(1,1))
+})
+
 })

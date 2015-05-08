@@ -3,6 +3,9 @@ tabela <- read.csv2("DJIA.csv",header=TRUE,fileEncoding="Windows-1250")
 imena <- tabela$Symbol
 imena <- levels(imena)
 imena <- append(imena,"GSPC")
+# zaUvoz <- c()
+# for(i in 1:length(imena)){
+#   zaUvoz[i] <- paste(imena[i],"$",imena[i],".Adjusted",sep="")}
 datum <- "2014-01-01"
 getSymbols(imena,from=datum)
 skupaj <- cbind(AAPL[,6],AXP[,6],BA[,6],CAT[,6],CSCO[,6],CVX[,6],DD[,6],DIS[,6],GE[,6],

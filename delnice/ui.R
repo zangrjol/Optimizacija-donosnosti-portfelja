@@ -9,25 +9,26 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput("select",label="Izberi delnico",choices=imena,selected = "AAPL"),
-#       
-#       dateRangeInput("datum",label=h3("Vnesi datum"),start="2014-01-02",end="2014-12-31",language="sl"),
+      selectInput("ime", label = "Izberi delnico za primerjavo",
+                  choices = imena,selected="AXP"),
+      dateRangeInput("datum",label=h3("Izberi interval za primerjavo:"),start="2014-02-14",
+                     end="2014-12-31",language="sl", separator = "do", weekstart = 1, format = "dd.mm.yyyy"),
 #       sliderInput("stevilo",label = h3("Minimalna cena"),min=10,max=150,value=10),
 #       helpText("Primerjaj z"),
 #       textInput("ime2",
 #                 "Simbol:",
 #                 value = "AAPL"),
-      selectInput("ime", label = "Izberi delnico za primerjavo",
-                  choices = imena,selected="AXP"),
-      dateInput("endatum", label ="Izberi datum",value="2015-05-05"),
-      sliderInput("koliko",label="Koliko delnic",min=1,max=30,value=5)
+      dateInput("endatum", label ="Izberi datum za izpis Sharpovih vrednosti:",value="2015-05-05"),
+      sliderInput("koliko",label="Najboljsih koliko?",min=1,max=30,value=5)
     ),
     
     mainPanel(
       fluidRow(
-        column(3,textOutput("naslov"),
+        column(3,h3(textOutput("naslov")),
                tableOutput("sharp")),
         column(9,
-               plotOutput("graf"))
+               plotOutput("graf"),
+               plotOutput("graf2"))
 #         column(3,
 #                tableOutput("date"))
 #         column(3,
