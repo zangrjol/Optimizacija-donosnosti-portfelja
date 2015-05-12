@@ -1,5 +1,5 @@
 start.time <- Sys.time()
-delnice <- read.csv2(file="U:/opb/ODP/delnice.csv", header = TRUE, fileEncoding = "Windows-1250")
+delnice <- read.csv2(file="U:/opb/ODP/DJIApodatki.csv", header = TRUE, fileEncoding = "Windows-1250")
 rownames(delnice)<- delnice[,1]
 delnice[,1] <- NULL
 

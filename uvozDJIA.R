@@ -6,7 +6,7 @@ imena <- append(imena,"GSPC")
 # zaUvoz <- c()
 # for(i in 1:length(imena)){
 #   zaUvoz[i] <- paste(imena[i],"$",imena[i],".Adjusted",sep="")}
-datum <- "2014-01-01"
+datum <- "2013-11-17" #od 2013-11-15 potem pride na 31.12.1014
 getSymbols(imena,from=datum)
 skupaj <- cbind(AAPL[,6],AXP[,6],BA[,6],CAT[,6],CSCO[,6],CVX[,6],DD[,6],DIS[,6],GE[,6],
                 GS[,6],HD[,6],IBM[,6],INTC[,6],JNJ[,6],JPM[,6],KO[,6],MCD[,6],MMM[,6],MRK[,6],
@@ -15,4 +15,4 @@ skupaj <- cbind(AAPL[,6],AXP[,6],BA[,6],CAT[,6],CSCO[,6],CVX[,6],DD[,6],DIS[,6],
 colnames(skupaj) <- imena
 sk <- data.frame(skupaj)
 
-write.csv2(sk,file="C:/Users/MATIC/Desktop/sola/3.letnik/osnove podatkovnih baz/ODP/DJIApodatki.csv",row.names=TRUE)
+write.csv2(sk,file="U:/opb/ODP/DJIApodatki.csv",row.names=TRUE)
