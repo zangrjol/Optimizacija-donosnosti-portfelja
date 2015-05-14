@@ -14,18 +14,22 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
+      h2("Sharpove vrednosti"),
+      dateInput("endatum", label ="Izberi datum za izpis Sharpovih vrednosti:",value="2015-05-05",
+                weekstart=1,format="dd.mm.yyyy"),
+      sliderInput("koliko",label="Najboljsih koliko?",min=1,max=30,value=5),
+      h2("Primerjava podjetij"),
       selectInput("select",label="Izberi delnico",choices=imena,selected = imena[1]),
       selectInput("ime", label = "Izberi delnico za primerjavo",
                   choices = imena,selected=imena[2]),
-      dateRangeInput("datum",label=h3("Izberi interval za primerjavo:"),start="2014-01-02",
+      dateRangeInput("datum",label="Izberi interval za primerjavo:",start="2014-01-02",
                      end="2014-12-31",language="sl", separator = "do", weekstart = 1, format = "dd.mm.yyyy"),
+      helpText(h6("*Opozorilo: Izberi datum od 02.01.2014 naprej",col = "red",align = "center"))
 #       sliderInput("stevilo",label = h3("Minimalna cena"),min=10,max=150,value=10),
 #       helpText("Primerjaj z"),
 #       textInput("ime2",
 #                 "Simbol:",
-#                 value = "AAPL"),
-      dateInput("endatum", label ="Izberi datum za izpis Sharpovih vrednosti:",value="2015-05-05"),
-      sliderInput("koliko",label="Najboljsih koliko?",min=1,max=30,value=5)
+#                 value = "AAPL")
     ),
     
     mainPanel(
