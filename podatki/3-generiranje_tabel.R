@@ -1,5 +1,5 @@
 start.time <- Sys.time()
-delnice <- read.csv2(file="U:/opb/ODP/DJIApodatki.csv", header = TRUE, fileEncoding = "Windows-1250")
+delnice <- read.csv2(file="U:/opb/ODP/podatki_cen.csv", header = TRUE, fileEncoding = "Windows-1250")
 rownames(delnice)<- delnice[,1]
 delnice[,1] <- NULL
 
@@ -123,9 +123,9 @@ tabela2_spremembe <- tabela2_spremembe[seq(1, length(tabela2_spremembe[,1]), n),
 tabela3_sharpe <- tabela3_sharpe[seq(1, length(tabela3_sharpe[,1]), n), ]
 
 #shranimo
-# write.csv2(tabela1_cene,file="U:/opb/ODP/tabela1_cene.csv")
-# write.csv2(tabela2_spremembe,file="U:/opb/ODP/tabela2_spremembe.csv")
-# write.csv2(tabela3_sharpe,file="U:/opb/ODP/tabela3_sharpe.csv")
+write.csv2(tabela1_cene,file="U:/opb/ODP/tabela1_cene.csv")
+write.csv2(tabela2_spremembe,file="U:/opb/ODP/tabela2_spremembe.csv")
+write.csv2(tabela3_sharpe,file="U:/opb/ODP/tabela3_sharpe.csv")
 
 ###################relativizacija cen
 krivulja <- cene
@@ -141,7 +141,7 @@ for (j in 1:((length(delnice[1,])))) {
 # plot(seq(1,length(delnice[,1]), 1), krivulja$AAPL, type="l")
 # lines(krivulja$AXP)
 # lines(krivulja$GS)
-write.csv2(krivulja,file="U:/opb/ODP/krivulja.csv")
+# write.csv2(krivulja,file="U:/opb/ODP/krivulja.csv")
 
 end.time <- Sys.time()
 time.taken <- end.time - start.time
