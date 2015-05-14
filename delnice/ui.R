@@ -1,16 +1,25 @@
 library(shiny)
-tabela <- read.csv2("DJIA.csv",header=TRUE,fileEncoding="Windows-1250")
-imena <- tabela$Symbol
-imena <- levels(imena)
+source("auth.R")
+conn <- src_postgres(dbname = db, host = host,
+                     user = user, password = password)
+tabela <- tbl(conn, "imena")
+tabela1 <- tbl(conn, "delnice")
+skupajTabela <- merge(tabela1,tabela, by ="simbol")
+tab <- data.frame(select(arrange(tabela,simbol),simbol))
+tabela 
+imena <- tab[,1]
+#tabela <- read.csv2("DJIA.csv",header=TRUE,fileEncoding="Windows-1250")
+#imena <- tabela$Symbol
+#imena <- levels(imena)
 shinyUI(fluidPage(
   
   titlePanel("Delnice"),
   
   sidebarLayout(
     sidebarPanel(
-      selectInput("select",label="Izberi delnico",choices=imena,selected = "AAPL"),
+      selectInput("select",label="Izberi delnico",choices=imena,selected = imena[1]),
       selectInput("ime", label = "Izberi delnico za primerjavo",
-                  choices = imena,selected="AXP"),
+                  choices = imena,selected=imena[2]),
       dateRangeInput("datum",label=h3("Izberi interval za primerjavo:"),start="2014-02-14",
                      end="2014-12-31",language="sl", separator = "do", weekstart = 1, format = "dd.mm.yyyy"),
 #       sliderInput("stevilo",label = h3("Minimalna cena"),min=10,max=150,value=10),
@@ -23,17 +32,25 @@ shinyUI(fluidPage(
     ),
     
     mainPanel(
-      fluidRow(
-        column(3,h3(textOutput("naslov")),
-               tableOutput("sharp")),
-        column(9,
-               plotOutput("graf"),
-               plotOutput("graf2"))
-#         column(3,
-#                tableOutput("date"))
-#         column(3,
-#                tableOutput("delnice2"))
+      tabsetPanel(
+        tabPanel("Sharpove", h3(textOutput("naslov")),tableOutput("sharp")), 
+        tabPanel("Primerjava cen", plotOutput("graf")), 
+        tabPanel("Primerjava donosov", plotOutput("graf2"))
       )
     )
+
+#     mainPanel(
+#       fluidRow(
+#         column(3,h3(textOutput("naslov")),
+#                tableOutput("sharp")),
+#         column(9,
+#                plotOutput("graf"),
+#                plotOutput("graf2"))
+# #         column(3,
+# #                tableOutput("date"))
+# #         column(3,
+# #                tableOutput("delnice2"))
+#       )
+#     )
   )
 ))

@@ -8,6 +8,8 @@ shinyServer(function(input, output) {
   conn <- src_postgres(dbname = db, host = host,
                        user = user, password = password)
   tabela <- tbl(conn, "delnice")
+  tabelaImen <- tbl(conn,"imena")
+  skupnaTabela <- merge(tabela,tabelaImen, by = "simbol")
   
   output$delnice <- renderTable({
     t <- data.frame(select(arrange(filter(tabela, simbol %in% (input$select) & cena > input$stevilo & 
@@ -27,12 +29,12 @@ shinyServer(function(input, output) {
   })
   
 
-  output$date <- renderTable({
-    t <- data.frame(select(arrange(filter(tabela, simbol %in% (input$ime2) & cena > input$stevilo & 
-                                            datum >= input$datum[1] & datum <= input$datum[2]),simbol),datum))
-    t$datum <- as.character(t$datum)
-    t
-  })
+#   output$date <- renderTable({
+#     t <- data.frame(select(arrange(filter(tabela, simbol %in% (input$ime2) & cena > input$stevilo & 
+#                                             datum >= input$datum[1] & datum <= input$datum[2]),simbol),datum))
+#     t$datum <- as.character(t$datum)
+#     t
+#   })
 
   output$sharp <- renderTable({
     t <- data.frame(select(arrange(filter(tabela, datum == input$endatum),sharp),c(simbol,cena,sharp)))
