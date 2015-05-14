@@ -7,10 +7,10 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 import auth
 
 #URL naslovi:
-URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/tabela1_cene.csv"
-URL1 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/tabela2_spremembe.csv"
-URL2 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/tabela3_sharpe.csv"
-URL3 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/DJIA.csv"
+URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/tabela1_cene.csv"
+URL1 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/tabela2_spremembe.csv"
+URL2 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/tabela3_sharpe.csv"
+URL3 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/podjetja_podatki.csv"
 
 #urejanje tabel pridobljenih iz URL naslovov:
 wwwcene = urllib.request.urlopen(URL)
