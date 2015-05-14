@@ -123,9 +123,9 @@ tabela2_spremembe <- tabela2_spremembe[seq(1, length(tabela2_spremembe[,1]), n),
 tabela3_sharpe <- tabela3_sharpe[seq(1, length(tabela3_sharpe[,1]), n), ]
 
 #shranimo
-# write.csv2(tabela1_cene,file="C:/zan/faks/opb/ODP/tabela1_cene.csv")
-# write.csv2(tabela2_spremembe,file="C:/zan/faks/opb/ODP/tabela2_spremembe.csv")
-# write.csv2(tabela3_sharpe,file="C:/zan/faks/opb/ODP/tabela3_sharpe.csv")
+# write.csv2(tabela1_cene,file="U:/opb/ODP/tabela1_cene.csv")
+# write.csv2(tabela2_spremembe,file="U:/opb/ODP/tabela2_spremembe.csv")
+# write.csv2(tabela3_sharpe,file="U:/opb/ODP/tabela3_sharpe.csv")
 
 ###################relativizacija cen
 krivulja <- cene

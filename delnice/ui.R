@@ -8,9 +8,6 @@ skupajTabela <- merge(tabela1,tabela, by ="simbol")
 tab <- data.frame(select(arrange(tabela,simbol),simbol))
 tabela 
 imena <- tab[,1]
-#tabela <- read.csv2("DJIA.csv",header=TRUE,fileEncoding="Windows-1250")
-#imena <- tabela$Symbol
-#imena <- levels(imena)
 shinyUI(fluidPage(
   
   titlePanel("Delnice"),
@@ -20,7 +17,7 @@ shinyUI(fluidPage(
       selectInput("select",label="Izberi delnico",choices=imena,selected = imena[1]),
       selectInput("ime", label = "Izberi delnico za primerjavo",
                   choices = imena,selected=imena[2]),
-      dateRangeInput("datum",label=h3("Izberi interval za primerjavo:"),start="2014-02-14",
+      dateRangeInput("datum",label=h3("Izberi interval za primerjavo:"),start="2014-01-02",
                      end="2014-12-31",language="sl", separator = "do", weekstart = 1, format = "dd.mm.yyyy"),
 #       sliderInput("stevilo",label = h3("Minimalna cena"),min=10,max=150,value=10),
 #       helpText("Primerjaj z"),
@@ -34,7 +31,9 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Sharpove", h3(textOutput("naslov")),tableOutput("sharp")), 
-        tabPanel("Primerjava cen", plotOutput("graf")), 
+        tabPanel("Primerjava cen", 
+                 fluidRow(plotOutput("graf")), 
+                 fluidRow(plotOutput("graf1"))),
         tabPanel("Primerjava donosov", plotOutput("graf2"))
       )
     )

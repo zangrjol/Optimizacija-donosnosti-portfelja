@@ -58,12 +58,12 @@ def ustvariTabelo():
     c = baza.cursor()
     c.execute('''CREATE TABLE delnice (
       id SERIAL PRIMARY KEY,
-      simbol TEXT,
+      simbol TEXT REFERENCES imena(simbol),
       datum DATE,
       cena REAL,
       sprememba REAL,
       sharp REAL,
-      UNIQUE (Simbol,Datum)
+      UNIQUE (simbol,datum)
       )''')
     baza.commit()
 
@@ -71,7 +71,7 @@ def ustvariImena():
     c = baza.cursor()
     c.execute('''CREATE TABLE imena (
       id SERIAL PRIMARY KEY,
-      simbol TEXT,
+      simbol TEXT UNIQUE,
       ime TEXT
       )''')
     baza.commit()
@@ -139,7 +139,7 @@ def podatkiSharp():
     c.close()
     baza.commit()
 
-def podatkiIMena():
+def podatkiImena():
     c = baza.cursor()
     for vrstica in ima:
         c.execute("INSERT INTO imena(ime,simbol) VALUES (%s,%s)",[vrstica[1],vrstica[3]])
@@ -151,3 +151,14 @@ def podatkiIMena():
 ##
 ##float(s.replace(',', '.'))
               
+def izbrisiTabele():
+    izbrisiDelnice()
+    izbrisiImena()
+
+def ustvariTabele():
+    ustvariImena()
+    ustvariTabelo()
+
+def uvoziPodatke():
+    podatkiImena()
+    podatkiCene()
