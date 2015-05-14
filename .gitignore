@@ -10,3 +10,5 @@ __pycache__
 .Rproj.user
 auth.py
 auth.R
+.RData
+.Rhistory
