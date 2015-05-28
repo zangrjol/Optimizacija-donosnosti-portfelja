@@ -152,8 +152,14 @@ def podatkiImena():
 ##float(s.replace(',', '.'))
               
 def izbrisiTabele():
-    izbrisiDelnice()
-    izbrisiImena()
+    try:
+        izbrisiDelnice()
+    except:
+        pass
+    try:
+        izbrisiImena()
+    except:
+        pass
 
 def ustvariTabele():
     ustvariImena()
@@ -162,3 +168,9 @@ def ustvariTabele():
 def uvoziPodatke():
     podatkiImena()
     podatkiCene()
+
+izbrisiTabele()    
+ustvariTabele()
+uvoziPodatke()
+
+    

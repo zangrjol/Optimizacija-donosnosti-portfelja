@@ -36,11 +36,14 @@ shinyServer(function(input, output) {
 #     t
 #   })
 
+  output$endatum <- renderUI({
+    datumMAX <- data.frame(summarize(select(tabela,datum),max(datum)))
+    dateInput("endatum", label ="Izberi datum za izpis Sharpovih vrednosti:",value=datumMAX[1,1],
+              weekstart=1,format="dd.mm.yyyy")
+  })
+
   output$sharp <- renderTable({
-    t <- data.frame(select(arrange(filter(tabela, datum == input$endatum),sharp),c(simbol,cena,sharp)))
-    t <- t[order(-t$sharp),]
-    t <- t[1:input$koliko,]
-    t
+    head(select(arrange(filter(tabela, datum == input$endatum),desc(sharp)),c(simbol,cena,sharp)),input$koliko)
   })
 
   output$naslov <- renderText({
@@ -98,6 +101,18 @@ shinyServer(function(input, output) {
     if (tip == "n") {
       text(0, (cene+cene1)/2, "Na ta dan ni podatkov!", cex = 2.5, col = "red")
     }
-})
+  })
+
+  output$datum <- renderUI({
+    datumMAx <- data.frame(summarize(select(tabela,datum),max(datum)))
+    datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
+    dateRangeInput("datum",label="Izberi interval za primerjavo:",start=datumMIN[1,1],
+                   end=datumMAx[1,1],language="sl", separator = "do", weekstart = 1, format = "dd.mm.yyyy")
+  })
+
+  output$opozorilo <- renderUI({
+    datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
+    helpText(h6(paste("*Opozorilo: Izberi datum od", datumMIN[1,1], "naprej"),col = "#FF0000" ,align = "center"))
+    })
 
 })
