@@ -2,7 +2,7 @@ library(shiny)
 library(dplyr)
 library(RPostgreSQL)
 
-source("auth.R")
+source("auth-public.R")
 
 shinyServer(function(input, output) {
   conn <- src_postgres(dbname = db, host = host,
@@ -42,9 +42,6 @@ shinyServer(function(input, output) {
               weekstart=1,format="dd.mm.yyyy")
   })
 
-  output$sharp <- renderTable({
-    head(select(arrange(filter(tabela, datum == input$endatum),desc(sharp)),c(simbol,cena,sharp)),input$koliko)
-  })
 
   output$naslov <- renderText({
     paste("Najboljsih",input$koliko,"delnic")
@@ -104,15 +101,20 @@ shinyServer(function(input, output) {
   })
 
   output$datum <- renderUI({
-    datumMAx <- data.frame(summarize(select(tabela,datum),max(datum)))
+    datumMAX <- data.frame(summarize(select(tabela,datum),max(datum)))
     datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
     dateRangeInput("datum",label="Izberi interval za primerjavo:",start=datumMIN[1,1],
-                   end=datumMAx[1,1],language="sl", separator = "do", weekstart = 1, format = "dd.mm.yyyy")
+                   end=datumMAX[1,1],language="sl", separator = "do", weekstart = 1)
   })
 
   output$opozorilo <- renderUI({
     datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
     helpText(h6(paste("*Opozorilo: Izberi datum od", datumMIN[1,1], "naprej"),col = "#FF0000" ,align = "center"))
     })
+
+  output$sharp <- renderTable({
+    t <- data.frame(select(arrange(filter(skupnaTabela, datum == input$endatum),desc(sharp)),c(simbol,ime,sharp,cena)))
+    head(t,input$koliko)
+  })
 
 })

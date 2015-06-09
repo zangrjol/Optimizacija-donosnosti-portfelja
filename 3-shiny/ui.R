@@ -1,5 +1,5 @@
 library(shiny)
-source("auth.R")
+source("auth-public.R")
 conn <- src_postgres(dbname = db, host = host,
                      user = user, password = password)
 tabela <- tbl(conn, "imena")
