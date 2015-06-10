@@ -56,3 +56,7 @@ V Shinyu lahko:
 2. Izberi dve razlièni delnici, ki jih želiš primerjati v izbranem èasovnem intervalu. 
 
 Opozorilo: datume lahko izbereš samo ob trgovalnih dnevih ter v obdobju, ki smo ga izbrali za prikaz gibanja cen delnic.		
+
+### ER diagram
+
+![ER diagram](diagram/Diagram.png)
