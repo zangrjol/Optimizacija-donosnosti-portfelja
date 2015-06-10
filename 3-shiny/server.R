@@ -38,7 +38,7 @@ shinyServer(function(input, output) {
 
   output$endatum <- renderUI({
     datumMAX <- data.frame(summarize(select(tabela,datum),max(datum)))
-    dateInput("endatum", label ="Izberi datum za izpis Sharpovih vrednosti:",value=datumMAX[1,1],
+    dateInput("endatum", label ="Izberi datum za izpis Sharpovih vrednosti:",value=as.Date(datumMAX[1,1]+1),
               weekstart=1,format="dd.mm.yyyy")
   })
 
@@ -103,8 +103,8 @@ shinyServer(function(input, output) {
   output$datum <- renderUI({
     datumMAX <- data.frame(summarize(select(tabela,datum),max(datum)))
     datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
-    dateRangeInput("datum",label="Izberi interval za primerjavo:",start=datumMIN[1,1],
-                   end=datumMAX[1,1],language="sl", separator = "do", weekstart = 1)
+    dateRangeInput("datum",label="Izberi interval za primerjavo:",start=as.Date(datumMIN[1,1])+1,
+                   end=as.Date(datumMAX[1,1])+1,language="sl", separator = "do", weekstart = 1)
   })
 
   output$opozorilo <- renderUI({
@@ -113,7 +113,11 @@ shinyServer(function(input, output) {
     })
 
   output$sharp <- renderTable({
-    t <- data.frame(select(arrange(filter(skupnaTabela, datum == input$endatum),desc(sharp)),c(simbol,ime,sharp,cena)))
+    if (is.null(input$endatum)) {
+      t <- data.frame()
+    } else {
+      t <- data.frame(select(arrange(filter(skupnaTabela, datum == input$endatum),desc(sharp)),c(simbol,ime,sharp,cena)))
+    }
     head(t,input$koliko)
   })
 
