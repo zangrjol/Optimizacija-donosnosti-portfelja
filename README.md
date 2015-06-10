@@ -5,8 +5,8 @@ Projekt pri OPB
 	
 ### 1-tabela_delnic.R
 
-1. z getwd() preveri ali si v mapi 1-podatki. Sicer spremeni working directory, kjer se nahaja 1-tabela_delnic.R
-2. Poženi program (v mapi se ustvari podjetja_podatki.csv)
+1. z `getwd()` preveri ali si v mapi `1-podatki`. Sicer spremeni working directory, kjer se nahaja `1-tabela_delnic.R`
+2. Poženi program (v mapi se ustvari `podjetja_podatki.csv`)
 
 ### 2-uvoz_podatkov.R 
 		
