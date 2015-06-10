@@ -23,9 +23,9 @@ Projekt pri OPB
 
 ## 2-baza
 
-**OPOZORILO**: v mapo prilepi `auth.template`, ki ga dobiš v mapi auth ter ga preimenuj v `auth.py`
+**OPOZORILO**: v mapo prilepi `auth.template`, ki ga dobiš v mapi `auth` ter ga preimenuj v `auth.py`
 
-V auth.py spremeni 
+V `auth.py` spremeni 
 db: `seminarska_[username]`, host: `baza.fmf.uni-lj.si`, user = `[username]`, password = `[password]` in datoteko shrani
 	
 ####	4-generiranje_baze_Postgresql.py
