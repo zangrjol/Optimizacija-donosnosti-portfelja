@@ -12,8 +12,8 @@ Projekt pri OPB
 		
 1. z `getwd()` preveri ali si v mapi `1-podatki`. Sicer spremeni working directory, kjer se nahaja `2-uvoz_podatkov.R`
 2. v tretji vrstici nastavi datum na željeni zaèetek. 
-
 *Opozorilo: Sharpove vrednosti se za prvih 30 dni ne izraèuna*
+
 3. poženi program (v mapi se ustvari `podatki_cen.csv`)
 
 #### 3-generiranje_tabel.R 
