@@ -46,8 +46,8 @@ shinyUI(fluidPage(
     tabPanel("Primerjava donosov",
              sidebarLayout(
                sidebarPanel(
-                 selectInput("select",label="Izberi delnico",choices=imena,selected = imena[1]),
-                 selectInput("ime", label = "Izberi delnico za primerjavo",
+                 selectInput("select1",label="Izberi delnico",choices=imena,selected = imena[1]),
+                 selectInput("ime1", label = "Izberi delnico za primerjavo",
                              choices = imena,selected=imena[2]),
                  uiOutput("datum1"),
                  uiOutput("opozorilo1")
