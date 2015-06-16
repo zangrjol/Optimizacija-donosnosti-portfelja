@@ -59,6 +59,22 @@ shinyUI(fluidPage(
                ),
                mainPanel(
                  plotOutput("graf2"))
+             )),
+    tabPanel("Backtesting",
+             sidebarLayout(
+               sidebarPanel(
+                 h2("Stevilo delnic, v katere vlagam"),
+                 #uiOutput("premozenje"),
+                 dateRangeInput("backdatum","Izberi interval",start="2014-01-02",end="2014-01-06"),
+                 sliderInput("st_delnic",label="Koliko delnic izberem=?",min=1,max=2,value=1,step=1)
+                 #       sliderInput("stevilo",label = h3("Minimalna cena"),min=10,max=150,value=10),
+                 #       helpText("Primerjaj z"),
+                 #       textInput("ime2",
+                 #                 "Simbol:",
+                 #                 value = "AAPL")
+               ),
+               mainPanel(
+                 plotOutput("premozenje")),
              ))
   )
 ))

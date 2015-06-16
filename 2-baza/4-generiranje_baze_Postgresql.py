@@ -7,10 +7,10 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 import auth
 
 #URL naslovi:
-URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/tabela1_cene.csv"
-URL1 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/tabela2_spremembe.csv"
-URL2 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/tabela3_sharpe.csv"
-URL3 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/podatki/podjetja_podatki.csv"
+URL = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/1-podatki/tabela1_cene.csv"
+URL1 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/1-podatki/tabela2_spremembe.csv"
+URL2 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/1-podatki/tabela3_sharpe.csv"
+URL3 = "https://raw.githubusercontent.com/zangrjol/Optimizacija-donosnosti-portfelja/master/1-podatki/podjetja_podatki.csv"
 
 #urejanje tabel pridobljenih iz URL naslovov:
 wwwcene = urllib.request.urlopen(URL)
@@ -81,10 +81,10 @@ def ustvariImena():
 delnice1 = delnice.decode("utf-8")
 delnice2 = delnice1.replace('\n','')
 
-sprememba1 = sprememba.decode("utf-8")
-sprememba2 = sprememba1.replace('\n','')
-sharp1 = sharp.decode("utf-8")
-#sharp2 = sharp.replace('\n','')
+##sprememba1 = sprememba.decode("utf-8")
+##sprememba2 = sprememba1.replace('\n','')
+##sharp1 = sharp.decode("utf-8")
+##sharp2 = sharp1.replace('\n','')
 
 #sharp5 = sharp.decode("utf-8")
 #sharp51 = sharp.replace('\n','')
@@ -100,15 +100,6 @@ imena =[]
 for i in imena_podjetij:
     imena.append(i[1:len(i)-1])
 
-
-#funkcija, ki nam
-def iskanje(datoteka):
-    www = urllib.request.urlopen(URL)
-    delnice = www.readline()
-    razpredelnica = csv.reader([v.decode() for v in www])
-    for vrstica in razpredelnica:
-        for i in len(vrstica):
-            print(i)
 
 #funkcija, ki nam uvozi podatke o cenah           
 def podatkiCene():
@@ -162,12 +153,17 @@ def izbrisiTabele():
         pass
 
 def ustvariTabele():
+    print("Ustvarjam tabele")
     ustvariImena()
     ustvariTabelo()
+    print("Tabele so ustvarjene")
 
 def uvoziPodatke():
+    print("Uvažam podatke")
     podatkiImena()
     podatkiCene()
+    print("Podatki so uvoženi")
+
 
 izbrisiTabele()    
 ustvariTabele()
