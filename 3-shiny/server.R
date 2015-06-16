@@ -16,37 +16,37 @@ shinyServer(function(input, output) {
                                             datum >= input$datum[1] & datum <= input$datum[2]),simbol),c(simbol,(datum),cena)))
     t
   })
-
-#   output$delnice <- renderTable({
-#     t <- data.frame(filter(tabela, simbol == input$select, datum >= input$datum[1] & datum <= input$datum[2]))
-#     t
-#   })
+  
+  #   output$delnice <- renderTable({
+  #     t <- data.frame(filter(tabela, simbol == input$select, datum >= input$datum[1] & datum <= input$datum[2]))
+  #     t
+  #   })
   
   output$delnice2 <- renderTable({
     t <- data.frame(arrange(filter(tabela, simbol %in% (input$ime2) & cena > input$stevilo & 
-                                            datum >= input$datum[1] & datum <= input$datum[2]),simbol))
+                                     datum >= input$datum[1] & datum <= input$datum[2]),simbol))
     t
   })
   
-
-#   output$date <- renderTable({
-#     t <- data.frame(select(arrange(filter(tabela, simbol %in% (input$ime2) & cena > input$stevilo & 
-#                                             datum >= input$datum[1] & datum <= input$datum[2]),simbol),datum))
-#     t$datum <- as.character(t$datum)
-#     t
-#   })
-
+  
+  #   output$date <- renderTable({
+  #     t <- data.frame(select(arrange(filter(tabela, simbol %in% (input$ime2) & cena > input$stevilo & 
+  #                                             datum >= input$datum[1] & datum <= input$datum[2]),simbol),datum))
+  #     t$datum <- as.character(t$datum)
+  #     t
+  #   })
+  
   output$endatum <- renderUI({
     datumMAX <- data.frame(summarize(select(tabela,datum),max(datum)))
     dateInput("endatum", label ="Izberi datum za izpis Sharpovih vrednosti:",value=as.Date(datumMAX[1,1]+1),
               weekstart=1,format="dd.mm.yyyy")
   })
-
-
+  
+  
   output$naslov <- renderText({
     paste("Najboljsih",input$koliko,"delnic")
   })
-
+  
   output$graf <- renderPlot({
     if (is.null(input$datum)) {
       text(0, 0, " ")
@@ -55,12 +55,12 @@ shinyServer(function(input, output) {
       cene <- data.frame(select(filter(tabela,simbol %in% (input$select) & datum >= input$datum[1] & datum <= input$datum[2]),cena))
       cene1 <- data.frame(select(filter(tabela,simbol %in% (input$ime) & datum >= input$datum[1] & datum <= input$datum[2]),cena))
       plot(datumi[,1],cene[,1],'l',col="red",main=paste("Gibanje cen delnic",input$select),ylab="price",xlab="")
-  #     par(new=TRUE)
-  #     plot(datumi[,1],cene1[,1],'l',ylim=range(min(cene[,1],cene1[,1]),max(cene[,1],cene1[,1])),xlab="",ylab="",col="green")
-  #     legend("topleft",legend=c(input$select,input$ime),col=c("red","green"),lty=c(1,1))
+      #     par(new=TRUE)
+      #     plot(datumi[,1],cene1[,1],'l',ylim=range(min(cene[,1],cene1[,1]),max(cene[,1],cene1[,1])),xlab="",ylab="",col="green")
+      #     legend("topleft",legend=c(input$select,input$ime),col=c("red","green"),lty=c(1,1))
     }
   })
-
+  
   output$graf1 <- renderPlot({
     if (is.null(input$datum)) {
       text(0, 0," ")
@@ -70,11 +70,11 @@ shinyServer(function(input, output) {
       cene1 <- data.frame(select(filter(tabela,simbol %in% (input$ime) & datum >= input$datum[1] & datum <= input$datum[2]),cena))
       #     par(new=TRUE)
       plot(datumi[,1],cene1[,1],'l',main=paste("Gibanje cen delnic",input$ime), 
-          xlab="",ylab="price",col="red")
+           xlab="",ylab="price",col="red")
       #legend("topleft",legend=c(input$select,input$ime),col=c("red","green"),lty=c(1,1))
     }
   })
-
+  
   output$graf2 <- renderPlot({
     datumi <- data.frame(0)
     cene <- 0
@@ -98,29 +98,29 @@ shinyServer(function(input, output) {
       }
     }
     plot(datumi[,1],cene,tip,col="red",main=paste("Relativizirane cene",input$select1,"in",input$ime1),xlab="",ylab="",
-        ylim=range(min(cene,cene1),max(cene,cene1)))
+         ylim=range(min(cene,cene1),max(cene,cene1)))
     lines(datumi[,1],cene1,ylim=range(min(cene,cene1),max(cene,cene1)),xlab="",ylab="",col="green")
     if (tip =="l") {
       abline(h=1,lty=3)
-      legend("topleft",legend=c(input$select,input$ime),col=c("red","green"),lty=c(1,1))
+      legend("topleft",legend=c(input$select1,input$ime1),col=c("red","green"),lty=c(1,1))
     }
     if (tip == "n") {
       text(0, (cene+cene1)/2, "Na ta dan ni podatkov!", cex = 2.5, col = "red")
     }
   })
-
+  
   output$datum <- renderUI({
     datumMAX <- data.frame(summarize(select(tabela,datum),max(datum)))
     datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
     dateRangeInput("datum",label="Izberi interval za primerjavo:",start=as.Date(datumMIN[1,1])+1,
                    end=as.Date(datumMAX[1,1])+1,language="sl", separator = "do", weekstart = 1)
   })
-
+  
   output$opozorilo <- renderUI({
     datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
     helpText(h6(paste("*Opozorilo: Izberi datum od", datumMIN[1,1], "naprej"),col = "#FF0000" ,align = "center"))
-    })
-
+  })
+  
   output$datum1 <- renderUI({
     datumMAX <- data.frame(summarize(select(tabela,datum),max(datum)))
     datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
@@ -132,8 +132,8 @@ shinyServer(function(input, output) {
     datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
     helpText(h6(paste("*Opozorilo: Izberi datum od", datumMIN[1,1], "naprej"),col = "#FF0000" ,align = "center"))
   })
-
-
+  
+  
   output$sharp <- renderTable({
     if (is.null(input$endatum)) {
       t <- data.frame()
@@ -142,5 +142,5 @@ shinyServer(function(input, output) {
     }
     head(t,input$koliko)
   })
-
+  
 })

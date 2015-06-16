@@ -59,6 +59,6 @@ shinyUI(fluidPage(
                ),
                mainPanel(
                  plotOutput("graf2"))
-               ))
+             ))
   )
 ))
