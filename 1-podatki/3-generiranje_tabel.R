@@ -34,7 +34,7 @@ dnevi <- 30 #koliko dnevni sharpov index računamo
 
 
 sharp <- delnice
-for (j in 1:(length(delnice[1,])-1)) { #do -1, ker zadnji stolpec je benchmark!
+for (j in 1:(length(delnice[1,]))) { #do -1, ker zadnji stolpec je benchmark!
   k <- 1
   while (delnice[k,j] == 0) { #začnemo pri tistem k-ju, ko delnica začne kotirati na borzi
     k <- k+1
@@ -45,7 +45,7 @@ for (j in 1:(length(delnice[1,])-1)) { #do -1, ker zadnji stolpec je benchmark!
   for (i in 1:(k+dnevi-1)) {sharp[i,j] <- NA}
 }
 #sharp <- sharp[(dnevi+1):length(sharp[,1]),] #zbrišem prvih 90 vrstic, kjer sharpov ni izračunan
-
+sharp[is.na(sharp)] <- 0
 
 
 #write.csv2(sharp,file="C:/zan/faks/opb/ODP/sharp.csv") #tabela izračunanih sharpovih vrednosti
@@ -113,9 +113,9 @@ tabela2_spremembe <- delnice[(dnevi+1):length(delnice[,1]),]
 tabela3_sharpe <- sharp[(dnevi+1):length(sharp[,1]),]
 
 #odstranimo še gspc benchmark
-tabela1_cene <- tabela1_cene[c(1:length(tabela1_cene)-1)]
-tabela2_spremembe <- tabela2_spremembe[c(1:length(tabela2_spremembe)-1)]
-tabela3_sharpe <- tabela3_sharpe[c(1:length(tabela3_sharpe)-1)]
+# tabela1_cene <- tabela1_cene[c(1:length(tabela1_cene)-1)]
+# tabela2_spremembe <- tabela2_spremembe[c(1:length(tabela2_spremembe)-1)]
+# tabela3_sharpe <- tabela3_sharpe[c(1:length(tabela3_sharpe)-1)]
 
 #prikažem samo tiste dneve, na katere investiram
 tabela1_cene <- tabela1_cene[seq(1, length(tabela1_cene[,1]), n), ]
