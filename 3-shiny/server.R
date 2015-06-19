@@ -143,38 +143,55 @@ shinyServer(function(input, output) {
     head(t,input$koliko)
   })
 
+  output$backdatum <- renderUI({
+    datumMIN <- data.frame(summarize(select(tabela,datum),min(datum)))
+    datumMAX <- as.Date(datumMIN[1,1]) + 5
+    dateRangeInput("backdatum",label="Izberi interval za primerjavo:",start=as.Date(datumMIN[1,1])+1,
+                   end=as.Date(datumMAX)+1,language="sl", separator = "do", weekstart = 1)
+  })
+  
   output$premozenje <- renderPlot({
-    zacetni_datum <- as.Date(input$backdatum[1])
-    koncni_datum <- as.Date(input$backdatum[2])
-    gspc <- data.frame(select(filter(tabela,simbol == "GSPC", datum >= zacetni_datum, datum <= koncni_datum),cena))
-    relativ <- gspc[1,1]
-    benchmark <- gspc[,1]/relativ
-    datumi <- data.frame(select(filter(tabela,simbol == "AAPL", datum >= zacetni_datum,datum <= koncni_datum),datum))
-    premozenje <- rep(0,(nrow(datumi)-1))
-    for (i in 1:(nrow(datumi)-1)){
-      donosi_delnic <- c()
-      t <- data.frame(select(arrange(filter(tabela, datum == datumi[i,1]),desc(sharp)),simbol))
-      delnice <- head(t,input$st_delnic)
-      simboli <- delnice[,1]
-      for (j in 1:length(simboli)){
-        d <- data.frame(select(filter(tabela,datum == datumi[i+1,1] && simbol == simboli[j]),sprememba))
-        donosi_delnic <-append(donosi_delnic,d[1,1])
+    if(is.null(input$backdatum[1])){
+      tip <- "n"
+    }else{
+      zacetni_datum <- as.Date(input$backdatum[1])
+      koncni_datum <- as.Date(input$backdatum[2])
+      gspc <- data.frame(select(filter(tabela,simbol == "GSPC", datum >= zacetni_datum, datum <= koncni_datum),cena))
+      relativ <- gspc[1,1]
+      benchmark <- gspc[,1]/relativ
+      datumi <- data.frame(select(filter(tabela,simbol == "AAPL", datum >= zacetni_datum,datum <= koncni_datum),datum))
+      premozenje <- rep(0,(nrow(datumi)-1))
+      for (i in 1:(nrow(datumi)-1)){
+        donosi_delnic <- c()
+        t <- data.frame(select(arrange(filter(tabela, datum == datumi[i,1]),desc(sharp)),simbol))
+        delnice <- head(t,input$st_delnic)
+        simboli <- delnice[,1]
+        for (j in 1:length(simboli)){
+          d <- data.frame(select(filter(tabela,datum == datumi[i+1,1] && simbol == simboli[j]),sprememba))
+          donosi_delnic <-append(donosi_delnic,d[1,1])
+        }
+        donos_portfelja <- mean(donosi_delnic)
+        premozenje[i+1] <- donos_portfelja
       }
-      donos_portfelja <- mean(donosi_delnic)
-      premozenje[i+1] <- donos_portfelja
+      premozenje <- premozenje[-1]
+      rast_premozenja <- premozenje
+      for (i in 1:(length(premozenje)-1)) {
+        rast_premozenja[i+1] <- rast_premozenja[i]*premozenje[i+1]
+      }
+      xos <- datumi[,1]
+      xos <- xos[-1]
+      benchmark <- benchmark[1:length(benchmark)-1]
+      tip <-"r"
     }
-    premozenje <- premozenje[-1]
-    rast_premozenja <- premozenje
-    for (i in 1:(length(premozenje)-1)) {
-      rast_premozenja[i+1] <- rast_premozenja[i]*premozenje[i+1]
+    if(tip == "r"){
+      plot(xos, rast_premozenja, type = "l",main="Donos",xlab="",ylab="donos",
+           ylim=c(min(benchmark,rast_premozenja),max(benchmark,rast_premozenja)))
+      lines(xos,benchmark, col = "red")
+      abline(h=1,lty=3)
     }
-    xos <- datumi[,1]
-    xos <- xos[-1]
-    benchmark <- benchmark[1:length(benchmark)-1]
-    plot(xos, rast_premozenja, type = "l",main="Donos",xlab="",ylab="donos",
-         ylim=c(min(benchmark,rast_premozenja),max(benchmark,rast_premozenja)))
-    lines(xos,benchmark, col = "red")
-    abline(h=1,lty=3)
+    if (tip == "n") {
+      text(0, 0, "Na ta dan ni podatkov!", cex = 2.5, col = "red")
+    }
   })
   
 })

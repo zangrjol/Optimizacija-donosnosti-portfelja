@@ -65,7 +65,7 @@ shinyUI(fluidPage(
                sidebarPanel(
                  h2("Stevilo delnic, v katere vlagam"),
                  #uiOutput("premozenje"),
-                 dateRangeInput("backdatum","Izberi interval",start="2014-01-03",end="2014-01-07"),
+                 uiOutput("backdatum"),
                  sliderInput("st_delnic",label="Koliko delnic izberem=?",min=1,max=10,value=1,step=1)
                  #       sliderInput("stevilo",label = h3("Minimalna cena"),min=10,max=150,value=10),
                  #       helpText("Primerjaj z"),
