@@ -188,6 +188,7 @@ shinyServer(function(input, output) {
            ylim=c(min(benchmark,rast_premozenja),max(benchmark,rast_premozenja)))
       lines(xos,benchmark, col = "red")
       abline(h=1,lty=3)
+      legend("topleft",legend=c("portfelj","benchmark"),col=c("black","red"),lty=c(1,1))
     }
     if (tip == "n") {
       text(0, 0, "Na ta dan ni podatkov!", cex = 2.5, col = "red")
