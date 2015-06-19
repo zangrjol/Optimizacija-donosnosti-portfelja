@@ -104,9 +104,12 @@ for i in imena_podjetij:
 #funkcija, ki nam uvozi podatke o cenah           
 def podatkiCene():
     c = baza.cursor()
+    j = 0  #stevec (nepomemben)
     for vrstica in razpredelnica:
+        j +=1
         spr = spremembe.__next__()
         sha = sharpove.__next__()
+        print(j)  #samo, da vidimo, da nekaj dela in koliko casa bo se potreboval
         for i in range(1,len(vrstica)):
             c.execute("INSERT INTO delnice(simbol,datum,cena,sprememba,sharp) VALUES (%s,%s,%s,%s,%s)", [imena[i-1],vrstica[0],float(vrstica[i].replace(',', '.')),float(spr[i].replace(',', '.')),float(sha[i].replace(',', '.'))] )
     c.close()
@@ -134,6 +137,7 @@ def podatkiImena():
     c = baza.cursor()
     for vrstica in ima:
         c.execute("INSERT INTO imena(ime,simbol) VALUES (%s,%s)",[vrstica[1],vrstica[3]])
+    c.execute("INSERT INTO imena(ime,simbol) VALUES ('SP500','GSPC')")
     c.close()
     baza.commit()
                                                                   

@@ -17,7 +17,7 @@ shinyUI(fluidPage(
                sidebarPanel(
                  h2("Sharpove vrednosti"),
                  uiOutput("endatum"),
-                 sliderInput("koliko",label="Najboljsih koliko?",min=1,max=30,value=5)
+                 sliderInput("koliko",label="Najboljsih koliko?",min=1,max=31,value=5)
                ),
                mainPanel(
                  h3(textOutput("naslov")),tableOutput("sharp")
@@ -65,8 +65,8 @@ shinyUI(fluidPage(
                sidebarPanel(
                  h2("Stevilo delnic, v katere vlagam"),
                  #uiOutput("premozenje"),
-                 dateRangeInput("backdatum","Izberi interval",start="2014-01-02",end="2014-01-06"),
-                 sliderInput("st_delnic",label="Koliko delnic izberem=?",min=1,max=2,value=1,step=1)
+                 dateRangeInput("backdatum","Izberi interval",start="2014-01-03",end="2014-01-07"),
+                 sliderInput("st_delnic",label="Koliko delnic izberem=?",min=1,max=10,value=1,step=1)
                  #       sliderInput("stevilo",label = h3("Minimalna cena"),min=10,max=150,value=10),
                  #       helpText("Primerjaj z"),
                  #       textInput("ime2",

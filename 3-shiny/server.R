@@ -144,7 +144,12 @@ shinyServer(function(input, output) {
   })
 
   output$premozenje <- renderPlot({
-    datumi <- data.frame(select(filter(tabela,simbol == "AAPL", datum >= input$backdatum[1],datum <= input$backdatum[2]),datum))
+    zacetni_datum <- as.Date(input$backdatum[1])
+    koncni_datum <- as.Date(input$backdatum[2])
+    gspc <- data.frame(select(filter(tabela,simbol == "GSPC", datum >= zacetni_datum, datum <= koncni_datum),cena))
+    relativ <- gspc[1,1]
+    benchmark <- gspc[,1]/relativ
+    datumi <- data.frame(select(filter(tabela,simbol == "AAPL", datum >= zacetni_datum,datum <= koncni_datum),datum))
     premozenje <- rep(0,(nrow(datumi)-1))
     for (i in 1:(nrow(datumi)-1)){
       donosi_delnic <- c()
@@ -165,7 +170,10 @@ shinyServer(function(input, output) {
     }
     xos <- datumi[,1]
     xos <- xos[-1]
-    plot(xos, rast_premozenja, type = "l",main="Donos",xlab="",ylab="donos")
+    benchmark <- benchmark[1:length(benchmark)-1]
+    plot(xos, rast_premozenja, type = "l",main="Donos",xlab="",ylab="donos",
+         ylim=c(min(benchmark,rast_premozenja),max(benchmark,rast_premozenja)))
+    lines(xos,benchmark, col = "red")
     abline(h=1,lty=3)
   })
   
