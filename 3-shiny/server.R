@@ -159,11 +159,16 @@ shinyServer(function(input, output) {
       gspc <- data.frame(select(filter(tabela,simbol == "GSPC", datum >= zacetni_datum, datum <= koncni_datum),cena))
       relativ <- gspc[1,1]
       benchmark <- gspc[,1]/relativ
-      datumi <- data.frame(select(filter(tabela,simbol == "AAPL", datum >= zacetni_datum,datum <= koncni_datum),datum))
-      premozenje <- rep(0,(nrow(datumi)-1))
+      datumi <- unique(data.frame(select(filter(tabela,datum >= zacetni_datum,datum <= koncni_datum),datum)))
+      premozenje <- rep(0,(nrow(datumi)))
       for (i in 1:(nrow(datumi)-1)){
         donosi_delnic <- c()
-        t <- data.frame(select(arrange(filter(tabela, datum == datumi[i,1]),desc(sharp)),simbol))
+        t <- data.frame(select(arrange(filter(tabela, datum == datumi[i,1]),desc(sharp)),c(simbol,sharp)))
+#         for(i in 1:nrow(t)){
+#           if(t$sharp[i] <= 0){
+#             t$simbol[i] <- "GSPC"
+#           }
+#         }
         delnice <- head(t,input$st_delnic)
         simboli <- delnice[,1]
         for (j in 1:length(simboli)){
@@ -174,21 +179,22 @@ shinyServer(function(input, output) {
         premozenje[i+1] <- donos_portfelja
       }
       premozenje <- premozenje[-1]
+      premozenje <- append(1,premozenje)
       rast_premozenja <- premozenje
       for (i in 1:(length(premozenje)-1)) {
         rast_premozenja[i+1] <- rast_premozenja[i]*premozenje[i+1]
       }
       xos <- datumi[,1]
-      xos <- xos[-1]
-      benchmark <- benchmark[1:length(benchmark)-1]
+      #xos <- xos[-1]
+      #benchmark <- benchmark[1:length(benchmark)-1]
       tip <-"r"
     }
     if(tip == "r"){
-      plot(xos, rast_premozenja, type = "l",main="Donos",xlab="",ylab="donos",
+      plot(xos, rast_premozenja, type = "l",main="Rast premoženja v primerjavi z rastjo benchmarka",xlab="",ylab="donos",
            ylim=c(min(benchmark,rast_premozenja),max(benchmark,rast_premozenja)))
       lines(xos,benchmark, col = "red")
       abline(h=1,lty=3)
-      legend("topleft",legend=c("portfelj","benchmark"),col=c("black","red"),lty=c(1,1))
+      legend("topleft",legend=c("portfelj","benchmark (S&P 500)"),col=c("black","red"),lty=c(1,1))
     }
     if (tip == "n") {
       text(0, 0, "Na ta dan ni podatkov!", cex = 2.5, col = "red")
